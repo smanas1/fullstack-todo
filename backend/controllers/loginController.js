@@ -26,7 +26,7 @@ const loginController = async (req, res) => {
             { id: user._id, email: user.email },
             process.env.TOKENKEY,
             {
-              expiresIn: "1m",
+              expiresIn: "24h",
             }
           );
           res.send({

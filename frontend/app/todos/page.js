@@ -4,6 +4,7 @@ const image = "/user.png";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -60,7 +61,9 @@ export default function Home() {
   const [userInfo, setUserInfo] = useState("");
   const [todos, setTodos] = useState([]);
   const [des, setDes] = useState("");
+  const [todoId, setTodoId] = useState("");
   const [update, setUpdate] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [updateuser, setUpdateuser] = useState(false);
 
   const [open, setOpen] = useState(false);
@@ -81,7 +84,6 @@ export default function Home() {
       })
       .then((response) => {
         setTodos(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -140,8 +142,6 @@ export default function Home() {
         setDes("");
       });
   };
-
-  console.log(userInfo);
 
   const handleComplete = (e) => {
     axios
@@ -225,9 +225,52 @@ export default function Home() {
         },
       })
       .then((res) => {
-        console.log(res);
         setOpen(false);
         setUpdateuser((update) => !update);
+      });
+  };
+  const handleUpdate = (e) => {
+    setTodo(e.todo);
+    setDes(e.des);
+    setTodoId(e._id);
+    setEdit(true);
+  };
+  const handleUpdateSubmit = () => {
+    axios
+      .post("http://localhost:8000/edit", {
+        todo: todo,
+        des: des,
+        id: todoId,
+      })
+      .then((res) => {
+        setTodo("");
+        setDes("");
+        setTodoId("");
+        setEdit(false);
+        setUpdate((update) => !update);
+        toast.success(res.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      })
+      .catch((err) => {
+        setEdit(false);
+        toast.error(err.response.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
   };
 
@@ -318,14 +361,23 @@ export default function Home() {
               value={des}
               onChange={(e) => setDes(e.target.value)}
             />
-            <Button
-              onClick={handleSubmit}
-              sx={{ fontSize: "20px", padding: "0" }}
-              variant="contained"
-              size="small"
-            >
-              +
-            </Button>
+            {edit ? (
+              <Button
+                onClick={handleUpdateSubmit}
+                variant="contained"
+                color="primary"
+              >
+                Update
+              </Button>
+            ) : (
+              <Button
+                onClick={handleSubmit}
+                variant="contained"
+                color="primary"
+              >
+                Add
+              </Button>
+            )}
           </div>
           {/* List */}
           <div className="mt-5">
@@ -350,6 +402,11 @@ export default function Home() {
                         </div>
                       </div>
                       <div>
+                        <BorderColorIcon
+                          color="success"
+                          onClick={() => handleUpdate(item)}
+                          sx={{ cursor: "pointer", marginRight: "10px" }}
+                        />
                         <DeleteIcon
                           sx={{ cursor: "pointer" }}
                           color="error"

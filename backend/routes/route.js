@@ -10,6 +10,7 @@ const uploads = require("../middlewares/multer");
 const getUserController = require("../controllers/getUserController");
 const verifyToken = require("../middlewares/verifyToken");
 const getAllTodos = require("../controllers/getAllTodos");
+const editTodoController = require("../controllers/editTodoControler");
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.post("/todocomplete/:id", verifyToken, todoCompleteController);
 router.delete("/tododelete/:id", verifyToken, todoDeleteController);
 router.post("/photo", uploads.single("profile"), photoUploadController);
 router.post("/user", getUserController);
+router.post("/edit", editTodoController);
 
 module.exports = router;
