@@ -1,12 +1,16 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
 
+let item;
+if (typeof window !== "undefined") {
+  item = localStorage.getItem("user");
+  item = JSON.parse(item);
+}
+
 export const userSlice = createSlice({
   name: "User",
   initialState: {
-    user: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
-      : false,
+    user: item ? item : false,
   },
   reducers: {
     activeUser: (state, action) => {

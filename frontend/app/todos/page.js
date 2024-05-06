@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";

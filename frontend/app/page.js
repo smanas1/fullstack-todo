@@ -5,7 +5,6 @@ import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "./redux/userSlice";
