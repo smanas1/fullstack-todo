@@ -11,6 +11,7 @@ const getUserController = require("../controllers/getUserController");
 const verifyToken = require("../middlewares/verifyToken");
 const getAllTodos = require("../controllers/getAllTodos");
 const editTodoController = require("../controllers/editTodoControler");
+const nameChangeController = require("../controllers/nameChangeController");
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.delete("/tododelete/:id", verifyToken, todoDeleteController);
 router.post("/photo", uploads.single("profile"), photoUploadController);
 router.post("/user", getUserController);
 router.post("/edit", editTodoController);
+router.post("/namechange", nameChangeController);
 
 module.exports = router;

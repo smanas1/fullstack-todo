@@ -42,7 +42,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 300,
   bgcolor: "background.paper",
   border: "0 solid #fff",
   boxShadow: 24,
@@ -62,6 +62,7 @@ export default function Home() {
   const [todos, setTodos] = useState([]);
   const [des, setDes] = useState("");
   const [todoId, setTodoId] = useState("");
+  const [name, setName] = useState("");
   const [update, setUpdate] = useState(false);
   const [edit, setEdit] = useState(false);
   const [updateuser, setUpdateuser] = useState(false);
@@ -89,6 +90,28 @@ export default function Home() {
         console.log(error);
       });
   }, [update]);
+
+  const handleNameChange = () => {
+    axios
+      .post("http://localhost:8000/namechange", {
+        id: user.id,
+        name: name,
+      })
+      .then((res) => {
+        setOpen(false);
+        setUpdateuser((update) => !update);
+        toast.success(res.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+  };
 
   const handleSubmit = () => {
     axios
@@ -285,7 +308,23 @@ export default function Home() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div className="flex justify-center">
+          <div className="flex justify-center flex-col">
+            <div className="flex justify-between mb-4">
+              <TextField
+                onChange={(e) => setName(e.target.value)}
+                sx={{ marginRight: "10px" }}
+                label="Name"
+                id="outlined-size-small"
+                size="small"
+              />
+              <Button
+                onClick={handleNameChange}
+                size="small"
+                variant="contained"
+              >
+                Save
+              </Button>
+            </div>
             <Button
               component="label"
               role={undefined}
