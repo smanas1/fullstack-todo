@@ -12,6 +12,7 @@ const verifyToken = require("../middlewares/verifyToken");
 const getAllTodos = require("../controllers/getAllTodos");
 const editTodoController = require("../controllers/editTodoControler");
 const nameChangeController = require("../controllers/nameChangeController");
+const profileUpdate = require("../controllers/profileUpdate");
 
 const router = express.Router();
 
@@ -25,5 +26,6 @@ router.post("/photo", uploads.single("profile"), photoUploadController);
 router.post("/user", getUserController);
 router.post("/edit", editTodoController);
 router.post("/namechange", nameChangeController);
+router.post("/profileupdate", profileUpdate);
 
 module.exports = router;

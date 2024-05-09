@@ -18,8 +18,11 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 const style = {
   position: "absolute",
@@ -28,6 +31,19 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 300,
   height: 200,
+  bgcolor: "background.paper",
+  border: "2px solid #fff",
+  boxShadow: 24,
+  p: 4,
+};
+
+const styleProfile = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 300,
+  height: 300,
   bgcolor: "background.paper",
   border: "2px solid #fff",
   boxShadow: 24,
@@ -44,10 +60,56 @@ export default function DenseTable() {
   const router = useRouter();
   const [todos, setTodos] = React.useState([]);
   const [todo, setTodo] = React.useState("");
+
   const [todoId, setTodoId] = React.useState("");
   const [des, setDes] = React.useState("");
   const [update, setUpdate] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  // Profile
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [id, setId] = React.useState("");
+  const [role, setRole] = React.useState("");
+
+  const handleRole = (event) => {
+    setRole(event.target.value);
+  };
+  const [openProfile, setOpenProfile] = React.useState(false);
+  const handleOpenProfile = (e) => {
+    setName(e.name);
+    setEmail(e.email);
+    setRole(e.role);
+    setId(e._id);
+    setOpenProfile(true);
+  };
+  const handleProfileSubmit = (e) => {
+    axios
+      .post("http://localhost:8000/profileupdate", {
+        id: id,
+        name: name,
+        role: role,
+      })
+      .then((res) => {
+        setUpdate((update) => !update);
+        setOpenProfile(false);
+        toast.success(res.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setOpenProfile(false);
+      });
+  };
+  const handleCloseProfile = () => setOpenProfile(false);
+
   const handleOpen = (e) => {
     setTodo(e.todo);
     setDes(e.des);
@@ -141,7 +203,7 @@ export default function DenseTable() {
         });
       });
   };
-
+  console.log(role);
   return (
     <div className="container m-auto">
       <ToastContainer />
@@ -177,6 +239,56 @@ export default function DenseTable() {
           </div>
         </Box>
       </Modal>
+
+      {/* Profile Model */}
+
+      <Modal
+        open={openProfile}
+        onClose={handleCloseProfile}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleProfile}>
+          <div className="flex flex-col justify-between h-full">
+            <TextField
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              label="Name"
+              id="outlined-size-small"
+              size="small"
+            />
+            <TextField
+              value={email}
+              label="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              disabled
+              id="outlined-size-small"
+              size="small"
+            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">{role}</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={role}
+                label="Role"
+                onChange={handleRole}
+              >
+                <MenuItem value={`user`}>User</MenuItem>
+                <MenuItem value={`manager`}>Manager</MenuItem>
+                <MenuItem value={`admin`}>Admin</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              size="small"
+              onClick={handleProfileSubmit}
+              variant="contained"
+            >
+              Update
+            </Button>
+          </div>
+        </Box>
+      </Modal>
       {todos && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -205,11 +317,13 @@ export default function DenseTable() {
                   <TableCell>
                     {item.creator.profilePhoto ? (
                       <Avatar
+                        onClick={() => handleOpenProfile(item.creator)}
                         alt="Remy Sharp"
                         src={`http://localhost:8000${item.creator.profilePhoto}`}
                       />
                     ) : (
                       <Avatar
+                        onClick={handleOpenProfile}
                         alt="Remy Sharp"
                         src="https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg"
                       />
